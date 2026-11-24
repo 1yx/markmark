@@ -290,6 +290,13 @@ public enum L10n {
 
         // 拖拽
         case unsupportedFileTypeAlert
+
+        // CriticMarkup 快捷键设置
+        case settingsCriticShortcutTitle
+        case settingsCriticShortcutDesc
+        case settingsCriticSubmitKeyLabel
+        case settingsCriticNewlineKeyLabel
+        case settingsCriticShortcutConflict
     }
 
     // MARK: - 翻译字典
@@ -510,6 +517,11 @@ public enum L10n {
         .exportHTMLSuccess: "HTML exported successfully",
         .exportHTMLFailed: "Failed to export HTML",
         .unsupportedFileTypeAlert: "Unsupported file type (.{ext}). Only Markdown files can be opened.",
+        .settingsCriticShortcutTitle: "Annotation Shortcuts",
+        .settingsCriticShortcutDesc: "Choose the shortcut to submit a comment or replacement in the rendered view.",
+        .settingsCriticSubmitKeyLabel: "Submit shortcut",
+        .settingsCriticNewlineKeyLabel: "Newline in comment",
+        .settingsCriticShortcutConflict: "This key is also set as the newline key. Pick a different one.",
     ]
 
     private static let zhCN: [Key: String] = [
@@ -728,6 +740,11 @@ public enum L10n {
         .exportHTMLSuccess: "HTML 导出成功",
         .exportHTMLFailed: "HTML 导出失败",
         .unsupportedFileTypeAlert: "不支持的文件类型（.{ext}）。仅支持打开 Markdown 文件。",
+        .settingsCriticShortcutTitle: "标注快捷键",
+        .settingsCriticShortcutDesc: "选择在渲染视图中提交评论或替换的快捷键。",
+        .settingsCriticSubmitKeyLabel: "提交快捷键",
+        .settingsCriticNewlineKeyLabel: "评论内换行",
+        .settingsCriticShortcutConflict: "该键已用于换行，请另选一个。",
     ]
 
     private static let zhTW: [Key: String] = [
@@ -946,6 +963,11 @@ public enum L10n {
         .exportHTMLSuccess: "HTML 匯出成功",
         .exportHTMLFailed: "HTML 匯出失敗",
         .unsupportedFileTypeAlert: "不支援的檔案類型（.{ext}）。僅支援開啟 Markdown 檔案。",
+        .settingsCriticShortcutTitle: "標註快捷鍵",
+        .settingsCriticShortcutDesc: "選擇在渲染視圖中提交評論或替換的快捷鍵。",
+        .settingsCriticSubmitKeyLabel: "提交快捷鍵",
+        .settingsCriticNewlineKeyLabel: "評論內換行",
+        .settingsCriticShortcutConflict: "該鍵已用於換行，請另選一個。",
     ]
 
     // MARK: - 查找

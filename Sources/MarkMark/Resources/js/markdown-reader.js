@@ -628,6 +628,31 @@
       }
     },
 
+    // ===== 标注输入快捷键（由 Swift 通过 setCriticKeys 注入）=====
+    criticKeys: { submit: 'ctrlEnter' },
+
+    setCriticKeys(cfg) {
+      if (cfg && typeof cfg === 'object' && cfg.submit) {
+        MR.criticKeys = Object.assign({}, MR.criticKeys, cfg);
+      }
+    },
+
+    // 判断一个 keydown 事件是否匹配某个 Enter 组合键（严格匹配修饰键）
+    _matchEnterCombo(e, combo) {
+      if (e.key !== 'Enter') return false;
+      const m = !!(e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey);
+      const c = !!(!e.metaKey && e.ctrlKey && !e.shiftKey && !e.altKey);
+      const s = !!(!e.metaKey && !e.ctrlKey && e.shiftKey && !e.altKey);
+      const n = !!(!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey);
+      switch (combo) {
+        case 'cmdEnter':   return m;
+        case 'ctrlEnter':  return c;
+        case 'shiftEnter': return s;
+        case 'enter':      return n;
+        default:           return false;
+      }
+    },
+
     // 用 CSS Custom Highlight API 给「正在标注」的选区上一层持久高亮。
     // 仅在进入评论/替换输入态（原生选区即将因聚焦输入框而消失）时设置；
     // 普通选词阶段原生选区本身可见，叠加高亮反而会触发 WebKit 的残留重绘 bug。
@@ -812,8 +837,7 @@
       confirm.addEventListener('click', submit);
       cancel.addEventListener('click', dismiss);
       field.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); submit(); }
-        else if (e.key === 'Enter' && !multiline) { e.preventDefault(); submit(); }
+        if (MR._matchEnterCombo(e, MR.criticKeys.submit)) { e.preventDefault(); submit(); }
         else if (e.key === 'Escape') { e.preventDefault(); dismiss(); }
       });
 
@@ -944,7 +968,7 @@
       cancel.addEventListener('click', () => MR._hideCommentPopover());
       save.addEventListener('click', submit);
       field.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); submit(); }
+        if (MR._matchEnterCombo(e, MR.criticKeys.submit)) { e.preventDefault(); submit(); }
         else if (e.key === 'Escape') { e.preventDefault(); MR._hideCommentPopover(); }
       });
 

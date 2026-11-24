@@ -68,6 +68,8 @@ final class SettingsModel {
         static let aiPromptTemplate     = "com.markdownreader.aiPromptTemplate"
         static let rememberedSidebarVisible = "com.markdownreader.rememberedSidebarVisible"
         static let rememberedOutlineVisible = "com.markdownreader.rememberedOutlineVisible"
+        static let criticSubmitKey          = "com.markdownreader.criticSubmitKey"
+        static let criticNewlineKey         = "com.markdownreader.criticNewlineKey"
     }
 
     private let defaults: UserDefaults
@@ -133,6 +135,21 @@ final class SettingsModel {
     /// 用户上次主动设置的右侧大纲栏显隐状态
     var rememberedOutlineVisible: Bool {
         didSet { defaults.set(rememberedOutlineVisible, forKey: Keys.rememberedOutlineVisible) }
+    }
+
+    /// CriticMarkup 标注输入框的「提交」快捷键（评论 / 替换 / 编辑评论共用）
+    var criticSubmitKey: CriticSubmitKey {
+        didSet { defaults.set(criticSubmitKey.rawValue, forKey: Keys.criticSubmitKey) }
+    }
+
+    /// 评论输入框（textarea）的「换行」快捷键
+    var criticNewlineKey: CriticNewlineKey {
+        didSet { defaults.set(criticNewlineKey.rawValue, forKey: Keys.criticNewlineKey) }
+    }
+
+    /// 提交与换行快捷键是否冲突（同一个 Enter 变体同时承担两种语义）
+    var criticShortcutConflict: Bool {
+        criticSubmitKey.rawValue == criticNewlineKey.rawValue
     }
 
     // MARK: - AI 提示词模板
@@ -436,6 +453,8 @@ final class SettingsModel {
         self.enableQuickLookPreview = defaults.bool(forKey: Keys.enableQuickLookPreview)
         self.rememberedSidebarVisible = defaults.object(forKey: Keys.rememberedSidebarVisible) as? Bool ?? false
         self.rememberedOutlineVisible = defaults.object(forKey: Keys.rememberedOutlineVisible) as? Bool ?? false
+        self.criticSubmitKey = CriticSubmitKey(rawValue: defaults.string(forKey: Keys.criticSubmitKey) ?? "") ?? .ctrlEnter
+        self.criticNewlineKey = CriticNewlineKey(rawValue: defaults.string(forKey: Keys.criticNewlineKey) ?? "") ?? .enter
         self.aiPromptTemplate = defaults.string(forKey: Keys.aiPromptTemplate) ?? ""
         self.skippedVersion = defaults.string(forKey: Keys.skippedVersion)
         self.lastUpdateCheckTime = defaults.object(forKey: Keys.lastUpdateCheckTime) as? Date
@@ -487,6 +506,42 @@ final class SettingsModel {
             }
         } else {
             self.recentItems = []
+        }
+    }
+}
+
+// MARK: - CriticMarkup 快捷键枚举
+
+/// 标注输入框「提交」快捷键（渲染视图内评论 / 替换 / 编辑评论共用）
+enum CriticSubmitKey: String, CaseIterable, Identifiable {
+    case enter
+    case cmdEnter
+    case ctrlEnter   // 默认
+    case shiftEnter
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .enter:      "Enter"
+        case .cmdEnter:   "⌘+Enter"
+        case .ctrlEnter:  "⌃+Enter"
+        case .shiftEnter: "⇧+Enter"
+        }
+    }
+}
+
+/// 评论输入框（textarea）「换行」快捷键
+enum CriticNewlineKey: String, CaseIterable, Identifiable {
+    case enter        // 默认
+    case shiftEnter
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .enter:      "Enter"
+        case .shiftEnter: "⇧+Enter"
         }
     }
 }

@@ -71,6 +71,8 @@ struct WebViewMarkdownView: NSViewRepresentable {
     var onLocalLinkActivated: ((URL) -> Void)?
     /// CriticMarkup 选词工具条的本地化文案（键：delete/highlight/comment/replace/confirm/cancel/edit/commentHint/replaceHint/notFound）
     var criticLabels: [String: String] = [:]
+    /// 标注输入框「提交」快捷键原始值（enter / cmdEnter / ctrlEnter / shiftEnter）
+    var criticSubmitKey: String = "ctrlEnter"
 
     /// 由父视图持有，使 PDF 导出可拿到当前 WKWebView。
     let handle: WebViewHandle
@@ -252,6 +254,12 @@ struct WebViewMarkdownView: NSViewRepresentable {
             eval("MR.setCriticLabels && MR.setCriticLabels(\(json))")
         }
 
+        private func pushCriticKeys() {
+            let combo = parent.criticSubmitKey.replacingOccurrences(of: "\\", with: "\\\\")
+                .replacingOccurrences(of: "'", with: "\\'")
+            eval("MR.setCriticKeys && MR.setCriticKeys({ submit: '\(combo)' })")
+        }
+
         private func updateSearchHighlight() {
             guard parent.isFindBarVisible else {
                 eval("MR.clearSearchHighlight && MR.clearSearchHighlight()")
@@ -277,6 +285,7 @@ struct WebViewMarkdownView: NSViewRepresentable {
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             isLoaded = true
             pushCriticLabels()
+            pushCriticKeys()
             if let line = pendingScrollToLine {
                 pendingScrollToLine = nil
                 // 给 JS 渲染（KaTeX/Mermaid/Prism）留出布局时间

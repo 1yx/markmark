@@ -192,6 +192,46 @@ struct GeneralSettingsView: View {
                     }
                 }
             }
+
+            SettingsDivider()
+
+            // CriticMarkup 快捷键
+            SettingsSection(
+                title: L10n.tr(.settingsCriticShortcutTitle, language: language),
+                description: L10n.tr(.settingsCriticShortcutDesc, language: language)
+            ) {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 8) {
+                        Text(L10n.tr(.settingsCriticSubmitKeyLabel, language: language))
+                            .foregroundStyle(settings.criticShortcutConflict ? Color.red : Color.secondary)
+                        Picker("", selection: $settings.criticSubmitKey) {
+                            ForEach(CriticSubmitKey.allCases) { key in
+                                Text(key.displayName).tag(key)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .frame(width: 160, alignment: .leading)
+                    }
+
+                    HStack(spacing: 8) {
+                        Text(L10n.tr(.settingsCriticNewlineKeyLabel, language: language))
+                            .foregroundStyle(settings.criticShortcutConflict ? Color.red : Color.secondary)
+                        Picker("", selection: $settings.criticNewlineKey) {
+                            ForEach(CriticNewlineKey.allCases) { key in
+                                Text(key.displayName).tag(key)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .frame(width: 160, alignment: .leading)
+                    }
+
+                    if settings.criticShortcutConflict {
+                        Text(L10n.tr(.settingsCriticShortcutConflict, language: language))
+                            .font(.system(size: 11))
+                            .foregroundStyle(Color.red)
+                    }
+                }
+            }
         }
         .padding(24)
         .onAppear {

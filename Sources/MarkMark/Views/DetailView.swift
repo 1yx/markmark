@@ -853,6 +853,7 @@ struct DetailView: View {
                     },
                     onLocalLinkActivated: onLocalMarkdownLink,
                     criticLabels: criticLabels,
+                    criticSubmitKey: settings.criticSubmitKey.rawValue,
                     handle: webViewHandle
                 )
                 .onChange(of: documentViewModel.scrollToLineRequest) { _, newValue in
